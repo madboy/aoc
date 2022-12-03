@@ -31,10 +31,20 @@ pub mod day01 {
 
 pub mod day02 {
     use std::collections::HashMap;
+    fn score(data: String, scoring: HashMap<(&str, &str), i32>) -> i32 {
+        data.lines()
+            .map(|line| line.split_whitespace())
+            .map(|mut split| {
+                scoring
+                    .get(&(split.next().unwrap(), split.next().unwrap()))
+                    .unwrap()
+            })
+            .sum::<i32>()
+    }
     pub fn part1(data: String) -> i32 {
         // A, B, C = rock, paper, scissor
         // X, Y, Z = rock, paper, scissor
-        // (1, 2, 3)
+        // rock, paper, scissor = 1, 2, 3
         let scoring = HashMap::from([
             (("A", "X"), 1 + 3),
             (("A", "Y"), 2 + 6),
@@ -45,20 +55,14 @@ pub mod day02 {
             (("C", "X"), 1 + 6),
             (("C", "Y"), 2 + 0),
             (("C", "Z"), 3 + 3),
-
         ]);
-        let mut total = 0;
-        for line in data.lines() {
-            let mut round = line.split_whitespace();
-            total += scoring.get(&(round.next().unwrap(), round.next().unwrap())).unwrap();
-        }
-        total
+        score(data, scoring)
     }
 
-    pub fn part2(data: String) -> i32{
+    pub fn part2(data: String) -> i32 {
         // A, B, C rock, paper, scissor
         // X, Y, Z lose, draw, win
-        // rock, paper, scissor (1, 2, 3)
+        // rock, paper, scissor = 1, 2, 3
         let scoring = HashMap::from([
             (("A", "X"), 3 + 0),
             (("A", "Y"), 1 + 3),
@@ -69,15 +73,8 @@ pub mod day02 {
             (("C", "X"), 2 + 0),
             (("C", "Y"), 3 + 3),
             (("C", "Z"), 1 + 6),
-
         ]);
-
-        let mut total = 0;
-        for line in data.lines() {
-            let mut round = line.split_whitespace();
-            total += scoring.get(&(round.next().unwrap(), round.next().unwrap())).unwrap();
-        }
-        total
+        score(data, scoring)
     }
 }
 
