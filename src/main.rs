@@ -29,6 +29,58 @@ pub mod day01 {
     }
 }
 
+pub mod day02 {
+    use std::collections::HashMap;
+    pub fn part1(data: String) -> i32 {
+        // A, B, C = rock, paper, scissor
+        // X, Y, Z = rock, paper, scissor
+        // (1, 2, 3)
+        let scoring = HashMap::from([
+            (("A", "X"), 1 + 3),
+            (("A", "Y"), 2 + 6),
+            (("A", "Z"), 3 + 0),
+            (("B", "X"), 1 + 0),
+            (("B", "Y"), 2 + 3),
+            (("B", "Z"), 3 + 6),
+            (("C", "X"), 1 + 6),
+            (("C", "Y"), 2 + 0),
+            (("C", "Z"), 3 + 3),
+
+        ]);
+        let mut total = 0;
+        for line in data.lines() {
+            let mut round = line.split_whitespace();
+            total += scoring.get(&(round.next().unwrap(), round.next().unwrap())).unwrap();
+        }
+        total
+    }
+
+    pub fn part2(data: String) -> i32{
+        // A, B, C rock, paper, scissor
+        // X, Y, Z lose, draw, win
+        // rock, paper, scissor (1, 2, 3)
+        let scoring = HashMap::from([
+            (("A", "X"), 3 + 0),
+            (("A", "Y"), 1 + 3),
+            (("A", "Z"), 2 + 6),
+            (("B", "X"), 1 + 0),
+            (("B", "Y"), 2 + 3),
+            (("B", "Z"), 3 + 6),
+            (("C", "X"), 2 + 0),
+            (("C", "Y"), 3 + 3),
+            (("C", "Z"), 1 + 6),
+
+        ]);
+
+        let mut total = 0;
+        for line in data.lines() {
+            let mut round = line.split_whitespace();
+            total += scoring.get(&(round.next().unwrap(), round.next().unwrap())).unwrap();
+        }
+        total
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -36,5 +88,15 @@ mod tests {
     #[test]
     fn solve_day01() {
         assert_eq!((70613, 205805), day01::solve(get_contents("input/1")))
+    }
+
+    #[test]
+    fn solve_day02_part1() {
+        assert_eq!(10310, day02::part1(get_contents("input/2")))
+    }
+
+    #[test]
+    fn solve_day02_part2() {
+        assert_eq!(14859, day02::part2(get_contents("input/2")))
     }
 }
