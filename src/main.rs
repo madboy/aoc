@@ -1,7 +1,7 @@
 use std::fs;
 
 fn main() {
-    println!("Hello, world!");
+    println!("{}", get_contents("input/hello"));
 }
 
 fn get_contents(path: &str) -> String {
@@ -25,7 +25,7 @@ pub mod day01 {
 
         let packs = packs.iter().rev();
 
-        return (packs.clone().take(1).sum(), packs.clone().take(3).sum());
+        (packs.clone().take(1).sum(), packs.clone().take(3).sum())
     }
 }
 
@@ -48,12 +48,12 @@ pub mod day02 {
         let scoring = HashMap::from([
             (("A", "X"), 1 + 3),
             (("A", "Y"), 2 + 6),
-            (("A", "Z"), 3 + 0),
-            (("B", "X"), 1 + 0),
+            (("A", "Z"), 3),
+            (("B", "X"), 1),
             (("B", "Y"), 2 + 3),
             (("B", "Z"), 3 + 6),
             (("C", "X"), 1 + 6),
-            (("C", "Y"), 2 + 0),
+            (("C", "Y"), 2),
             (("C", "Z"), 3 + 3),
         ]);
         score(data, scoring)
@@ -64,13 +64,13 @@ pub mod day02 {
         // X, Y, Z lose, draw, win
         // rock, paper, scissor = 1, 2, 3
         let scoring = HashMap::from([
-            (("A", "X"), 3 + 0),
+            (("A", "X"), 3),
             (("A", "Y"), 1 + 3),
             (("A", "Z"), 2 + 6),
-            (("B", "X"), 1 + 0),
+            (("B", "X"), 1),
             (("B", "Y"), 2 + 3),
             (("B", "Z"), 3 + 6),
-            (("C", "X"), 2 + 0),
+            (("C", "X"), 2),
             (("C", "Y"), 3 + 3),
             (("C", "Z"), 1 + 6),
         ]);
