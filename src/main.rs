@@ -84,7 +84,7 @@ pub mod day03 {
     static PRIORITIES: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     fn get_priority(c: &char) -> usize {
-        return match PRIORITIES.find(*c) {
+        match PRIORITIES.find(*c) {
             Some(val) => val + 1,
             _ => {
                 eprint!("Did not find char in priorities {}", c);
@@ -106,8 +106,8 @@ pub mod day03 {
                         Some(_item) => {
                             priority += get_priority(&c);
                             break;
-                        },
-                        _ => continue
+                        }
+                        _ => continue,
                     }
                 }
             }
@@ -129,16 +129,16 @@ pub mod day03 {
                         Some(_item) => {
                             second_member.insert(c, 1);
                             continue;
-                        },
-                        _ => continue
+                        }
+                        _ => continue,
                     }
-                } else if group_member ==  3 {
+                } else if group_member == 3 {
                     match second_member.get(&c) {
                         Some(_item) => {
                             priority += get_priority(&c);
                             break;
                         }
-                        _ => continue
+                        _ => continue,
                     }
                 }
             }
@@ -154,15 +154,15 @@ pub mod day03 {
 }
 
 pub mod day04 {
-    fn fully_contains(bounds: &[i32;4]) -> bool {
+    fn fully_contains(bounds: &[i32; 4]) -> bool {
         let &[fl, fh, sl, sh] = bounds;
-        if (fl <= sl && fh >= sh) || (fh <= sh && fl >= sl){
+        if (fl <= sl && fh >= sh) || (fh <= sh && fl >= sl) {
             return true;
         }
         false
     }
 
-    fn overlaps(bounds: &[i32;4]) -> bool {
+    fn overlaps(bounds: &[i32; 4]) -> bool {
         let &[fl, fh, sl, sh] = bounds;
         if fh < sl || fl > sh {
             return false;
@@ -175,17 +175,19 @@ pub mod day04 {
         let mut contained = 0;
         let mut overlap = 0;
         for line in data.lines() {
-            let pairs = line.split(",");
+            let pairs = line.split(',');
             let mut idx = 0;
             for pair in pairs {
-                let upper: Vec<i32> = pair.split("-").map(|bound| bound.parse::<i32>().expect("I want only numbers")).collect();
+                let upper: Vec<i32> = pair
+                    .split('-')
+                    .map(|bound| bound.parse::<i32>().expect("I want only numbers"))
+                    .collect();
                 bounds[idx] = upper[0];
-                bounds[idx+1] = upper[1];
+                bounds[idx + 1] = upper[1];
                 idx += 2;
             }
             if fully_contains(&bounds) {
                 contained += 1;
-
             }
 
             if overlaps(&bounds) {
@@ -194,7 +196,6 @@ pub mod day04 {
         }
         (contained, overlap)
     }
-
 }
 
 #[cfg(test)]
