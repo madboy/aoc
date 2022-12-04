@@ -78,6 +78,81 @@ pub mod day02 {
     }
 }
 
+pub mod day03 {
+    use std::collections::HashMap;
+
+    static PRIORITIES: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    fn get_priority(c: &char) -> usize {
+        return match PRIORITIES.find(*c) {
+            Some(val) => val + 1,
+            _ => {
+                eprint!("Did not find char in priorities {}", c);
+                usize::MAX
+            }
+        }
+    }
+
+    pub fn part1(data: String) -> usize {
+        let mut priority = 0;
+        for line in data.lines() {
+            let mut seen = HashMap::new();
+            let length = line.len();
+            for (i, c) in line.chars().enumerate() {
+                if i < (length / 2) {
+                    seen.insert(c, 1);
+                } else {
+                    match seen.get(&c) {
+                        Some(_item) => {
+                            priority += get_priority(&c);
+                            break;
+                        },
+                        _ => continue
+                    }
+                }
+            }
+        }
+        priority
+    }
+
+    pub fn part2(data: String) -> usize {
+        let mut priority = 0;
+        let mut group_member = 1;
+        let mut first_member = HashMap::new();
+        let mut second_member = HashMap::new();
+        for line in data.lines() {
+            for c in line.chars() {
+                if group_member == 1 {
+                    first_member.insert(c, 1);
+                } else if group_member == 2 {
+                    match first_member.get(&c) {
+                        Some(_item) => {
+                            second_member.insert(c, 1);
+                            continue;
+                        },
+                        _ => continue
+                    }
+                } else if group_member ==  3 {
+                    match second_member.get(&c) {
+                        Some(_item) => {
+                            priority += get_priority(&c);
+                            break;
+                        }
+                        _ => continue
+                    }
+                }
+            }
+            group_member += 1;
+            if group_member > 3 {
+                group_member = 1;
+                first_member.clear();
+                second_member.clear();
+            }
+        }
+        priority
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -95,5 +170,15 @@ mod tests {
     #[test]
     fn solve_day02_part2() {
         assert_eq!(14859, day02::part2(get_contents("input/2")))
+    }
+
+    #[test]
+    fn solve_day03_part1() {
+        assert_eq!(8109, day03::part1(get_contents("input/3")))
+    }
+
+    #[test]
+    fn solve_day03_part2() {
+        assert_eq!(2738, day03::part2(get_contents("input/3")))
     }
 }
