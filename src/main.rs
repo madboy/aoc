@@ -153,6 +153,50 @@ pub mod day03 {
     }
 }
 
+pub mod day04 {
+    fn fully_contains(bounds: &[i32;4]) -> bool {
+        let &[fl, fh, sl, sh] = bounds;
+        if (fl <= sl && fh >= sh) || (fh <= sh && fl >= sl){
+            return true;
+        }
+        false
+    }
+
+    fn overlaps(bounds: &[i32;4]) -> bool {
+        let &[fl, fh, sl, sh] = bounds;
+        if fh < sl || fl > sh {
+            return false;
+        }
+        true
+    }
+
+    pub fn solve(data: String) -> (i32, i32) {
+        let mut bounds: [i32; 4] = [0; 4];
+        let mut contained = 0;
+        let mut overlap = 0;
+        for line in data.lines() {
+            let pairs = line.split(",");
+            let mut idx = 0;
+            for pair in pairs {
+                let upper: Vec<i32> = pair.split("-").map(|bound| bound.parse::<i32>().expect("I want only numbers")).collect();
+                bounds[idx] = upper[0];
+                bounds[idx+1] = upper[1];
+                idx += 2;
+            }
+            if fully_contains(&bounds) {
+                contained += 1;
+
+            }
+
+            if overlaps(&bounds) {
+                overlap += 1;
+            }
+        }
+        (contained, overlap)
+    }
+
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -180,5 +224,10 @@ mod tests {
     #[test]
     fn solve_day03_part2() {
         assert_eq!(2738, day03::part2(get_contents("input/3")))
+    }
+
+    #[test]
+    fn solve_day04() {
+        assert_eq!((605, 914), day04::solve(get_contents("input/4")))
     }
 }
