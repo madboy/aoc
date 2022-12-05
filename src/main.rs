@@ -10,9 +10,11 @@ fn get_contents(path: &str) -> String {
 
 pub mod day01 {
     fn get_calories(data: String) -> Vec<i32> {
-        data.split("\r\n\r\n")
+        data.lines()
+            .collect::<Vec<_>>()
+            .split(|line| line.is_empty())
             .map(|pack| {
-                pack.lines()
+                pack.iter()
                     .map(|calorie| calorie.parse::<i32>().expect("Should be a number"))
                     .sum()
             })
@@ -21,11 +23,14 @@ pub mod day01 {
 
     pub fn solve(data: String) -> (i32, i32) {
         let mut packs = get_calories(data);
-        packs.sort();
 
-        let packs = packs.iter().rev();
+        // loose the rev, and clone thanks to https://fasterthanli.me/series/advent-of-code-2022/part-1
+        packs.sort_by_key(|&v| std::cmp::Reverse(v));
 
-        (packs.clone().take(1).sum(), packs.clone().take(3).sum())
+        (
+            (&mut packs).iter().take(1).sum(),
+            (&mut packs).iter().take(3).sum(),
+        )
     }
 }
 
