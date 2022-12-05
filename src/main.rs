@@ -85,35 +85,31 @@ pub mod day02 {
 
 pub mod day03 {
     use std::collections::HashMap;
+    use std::collections::HashSet;
 
-    static PRIORITIES: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    fn get_priority(c: &char) -> usize {
-        match PRIORITIES.find(*c) {
-            Some(val) => val + 1,
-            _ => {
-                eprint!("Did not find char in priorities {}", c);
-                usize::MAX
-            }
+    // simplify priority from https://fasterthanli.me/series/advent-of-code-2022/part-3
+    fn get_priority(c: char) -> usize {
+        match c {
+            'a'..='z' => 1 + (c as u8 - b'a') as usize,
+            'A'..='Z' => 27 + (c as u8 - b'A') as usize,
+            _ => unreachable!(),
         }
     }
 
     pub fn part1(data: String) -> usize {
         let mut priority = 0;
         for line in data.lines() {
-            let mut seen = HashMap::new();
-            let length = line.len();
-            for (i, c) in line.chars().enumerate() {
-                if i < (length / 2) {
-                    seen.insert(c, 1);
-                } else {
-                    match seen.get(&c) {
-                        Some(_item) => {
-                            priority += get_priority(&c);
-                            break;
-                        }
-                        _ => continue,
+            let (first, second) = line.split_at(line.len() / 2);
+
+            let seen = first.chars().collect::<HashSet<char>>();
+
+            for c in second.chars() {
+                match seen.get(&c) {
+                    Some(_item) => {
+                        priority += get_priority(c);
+                        break;
                     }
+                    _ => continue,
                 }
             }
         }
@@ -140,7 +136,7 @@ pub mod day03 {
                 } else if group_member == 3 {
                     match second_member.get(&c) {
                         Some(_item) => {
-                            priority += get_priority(&c);
+                            priority += get_priority(c);
                             break;
                         }
                         _ => continue,
