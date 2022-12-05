@@ -24,12 +24,12 @@ pub mod day01 {
     pub fn solve(data: String) -> (i32, i32) {
         let mut packs = get_calories(data);
 
-        // loose the rev, and clone thanks to https://fasterthanli.me/series/advent-of-code-2022/part-1
+        // loose the rev thanks to https://fasterthanli.me/series/advent-of-code-2022/part-1
         packs.sort_by_key(|&v| std::cmp::Reverse(v));
 
         (
-            (&mut packs).iter().take(1).sum(),
-            (&mut packs).iter().take(3).sum(),
+            packs.iter().take(1).sum(),
+            packs.iter().take(3).sum(),
         )
     }
 }
