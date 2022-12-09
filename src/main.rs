@@ -198,12 +198,8 @@ pub mod day04 {
     }
 }
 pub mod day05 {
-    pub fn part1(data: String, size: usize) -> String {
-        let data = data.replace("\r\n", "\n");
-        let split_data = data.split("\n\n").collect::<Vec<&str>>();
-
-        let mut stacks = vec![vec![]; size];
-        for row in split_data[0].split('\n') {
+    fn parse_crates(split_data: &str, mut stacks: Vec<Vec<char>>) -> Vec<Vec<char>> {
+        for row in split_data.split('\n') {
             let row = row.chars().collect::<Vec<char>>();
             for (c, i) in (1..row.len()).step_by(4).enumerate() {
                 if let Some(v) = row.get(i) {
@@ -213,17 +209,30 @@ pub mod day05 {
                 };
             }
         }
+        stacks
+    }
+
+    fn get_instruction(row: &str) -> Vec<usize> {
+        let instruction = row
+            .replace("move ", "")
+            .replace(" from", "")
+            .replace(" to", "");
+        instruction
+            .split(' ')
+            .map(|s| s.parse::<usize>().expect("number"))
+            .collect::<Vec<usize>>()
+    }
+
+    pub fn part1(data: String, size: usize) -> String {
+        let data = data.replace("\r\n", "\n");
+        let split_data = data.split("\n\n").collect::<Vec<&str>>();
+
+        let stacks = vec![vec![]; size];
+        let mut stacks = parse_crates(split_data[0], stacks);
 
         for row in split_data[1].split('\n') {
             if !row.is_empty() {
-                let instruction = row
-                    .replace("move ", "")
-                    .replace(" from", "")
-                    .replace(" to", "");
-                let instruction = instruction
-                    .split(' ')
-                    .map(|s| s.parse::<usize>().expect("number"))
-                    .collect::<Vec<usize>>();
+                let instruction = get_instruction(row);
 
                 for _ in 0..instruction[0] {
                     let v = stacks[instruction[1] - 1].pop().unwrap();
@@ -243,28 +252,12 @@ pub mod day05 {
         let data = data.replace("\r\n", "\n");
         let split_data = data.split("\n\n").collect::<Vec<&str>>();
 
-        let mut stacks = vec![vec![]; size];
-        for row in split_data[0].split('\n') {
-            let row = row.chars().collect::<Vec<char>>();
-            for (c, i) in (1..row.len()).step_by(4).enumerate() {
-                if let Some(v) = row.get(i) {
-                    if !v.is_whitespace() && !v.is_ascii_digit() {
-                        stacks[c].insert(0, *v);
-                    }
-                };
-            }
-        }
+        let stacks = vec![vec![]; size];
+        let mut stacks = parse_crates(split_data[0], stacks);
 
         for row in split_data[1].split('\n') {
             if !row.is_empty() {
-                let instruction = row
-                    .replace("move ", "")
-                    .replace(" from", "")
-                    .replace(" to", "");
-                let instruction = instruction
-                    .split(' ')
-                    .map(|s| s.parse::<usize>().expect("number"))
-                    .collect::<Vec<usize>>();
+                let instruction = get_instruction(row);
 
                 let d = stacks[instruction[1] - 1].len() - instruction[0];
                 let v = stacks[instruction[1] - 1].drain(d..).collect::<Vec<char>>();
