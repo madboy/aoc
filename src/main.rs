@@ -203,30 +203,25 @@ pub mod day05 {
         let split_data = data.split("\n\n").collect::<Vec<&str>>();
 
         let mut stacks = vec![vec![]; size];
-        for row in split_data[0].split("\n") {
+        for row in split_data[0].split('\n') {
             let row = row.chars().collect::<Vec<char>>();
-            let mut c = 0;
-            for i in (1..row.len()).step_by(4) {
-                match row.get(i) {
-                    Some(v) => {
-                        if !v.is_whitespace() && !v.is_digit(10) {
-                            stacks[c].insert(0, v.clone());
-                        }
+            for (c, i) in (1..row.len()).step_by(4).enumerate() {
+                if let Some(v) = row.get(i) {
+                    if !v.is_whitespace() && !v.is_ascii_digit() {
+                        stacks[c].insert(0, *v);
                     }
-                    None => (),
                 };
-                c += 1;
             }
         }
 
-        for row in split_data[1].split("\n") {
+        for row in split_data[1].split('\n') {
             if !row.is_empty() {
                 let instruction = row
                     .replace("move ", "")
                     .replace(" from", "")
                     .replace(" to", "");
                 let instruction = instruction
-                    .split(" ")
+                    .split(' ')
                     .map(|s| s.parse::<usize>().expect("number"))
                     .collect::<Vec<usize>>();
 
@@ -249,30 +244,25 @@ pub mod day05 {
         let split_data = data.split("\n\n").collect::<Vec<&str>>();
 
         let mut stacks = vec![vec![]; size];
-        for row in split_data[0].split("\n") {
+        for row in split_data[0].split('\n') {
             let row = row.chars().collect::<Vec<char>>();
-            let mut c = 0;
-            for i in (1..row.len()).step_by(4) {
-                match row.get(i) {
-                    Some(v) => {
-                        if !v.is_whitespace() && !v.is_digit(10) {
-                            stacks[c].insert(0, v.clone());
-                        }
+            for (c, i) in (1..row.len()).step_by(4).enumerate() {
+                if let Some(v) = row.get(i) {
+                    if !v.is_whitespace() && !v.is_ascii_digit() {
+                        stacks[c].insert(0, *v);
                     }
-                    None => (),
                 };
-                c += 1;
             }
         }
 
-        for row in split_data[1].split("\n") {
+        for row in split_data[1].split('\n') {
             if !row.is_empty() {
                 let instruction = row
                     .replace("move ", "")
                     .replace(" from", "")
                     .replace(" to", "");
                 let instruction = instruction
-                    .split(" ")
+                    .split(' ')
                     .map(|s| s.parse::<usize>().expect("number"))
                     .collect::<Vec<usize>>();
 
