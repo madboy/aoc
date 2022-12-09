@@ -223,39 +223,24 @@ pub mod day05 {
             .collect::<Vec<usize>>()
     }
 
-    pub fn part1(data: String, size: usize) -> String {
-        let data = data.replace("\r\n", "\n");
-        let split_data = data.split("\n\n").collect::<Vec<&str>>();
-
-        let stacks = vec![vec![]; size];
-        let mut stacks = parse_crates(split_data[0], stacks);
-
-        for row in split_data[1].split('\n') {
+    fn part1(split_data: &str, mut stacks: Vec<Vec<char>>) -> Vec<Vec<char>> {
+        for row in split_data.split('\n') {
             if !row.is_empty() {
                 let instruction = get_instruction(row);
 
-                for _ in 0..instruction[0] {
-                    let v = stacks[instruction[1] - 1].pop().unwrap();
-                    stacks[instruction[2] - 1].push(v);
-                }
+                let d = stacks[instruction[1] - 1].len() - instruction[0];
+                let v = stacks[instruction[1] - 1]
+                    .drain(d..)
+                    .rev()
+                    .collect::<Vec<char>>();
+                stacks[instruction[2] - 1].append(v.clone().as_mut());
             }
         }
-
-        let mut result = String::new();
-        for stack in &stacks {
-            result += &stack.last().unwrap().to_string();
-        }
-        result.clone()
+        stacks
     }
 
-    pub fn part2(data: String, size: usize) -> String {
-        let data = data.replace("\r\n", "\n");
-        let split_data = data.split("\n\n").collect::<Vec<&str>>();
-
-        let stacks = vec![vec![]; size];
-        let mut stacks = parse_crates(split_data[0], stacks);
-
-        for row in split_data[1].split('\n') {
+    fn part2(split_data: &str, mut stacks: Vec<Vec<char>>) -> Vec<Vec<char>> {
+        for row in split_data.split('\n') {
             if !row.is_empty() {
                 let instruction = get_instruction(row);
 
@@ -264,12 +249,32 @@ pub mod day05 {
                 stacks[instruction[2] - 1].append(v.clone().as_mut());
             }
         }
+        stacks
+    }
+
+    pub fn solve(data: String, size: usize) -> (String, String) {
+        let data = data.replace("\r\n", "\n");
+        let split_data = data.split("\n\n").collect::<Vec<&str>>();
+
+        let stacks = vec![vec![]; size];
+        let stacks = parse_crates(split_data[0], stacks);
+        let stacks = part1(split_data[1], stacks);
 
         let mut result = String::new();
         for stack in &stacks {
             result += &stack.last().unwrap().to_string();
         }
-        result.clone()
+
+        let stacks2 = vec![vec![]; size];
+        let stacks2 = parse_crates(split_data[0], stacks2);
+        let stacks2 = part2(split_data[1], stacks2);
+
+        let mut result2 = String::new();
+        for stack in &stacks2 {
+            result2 += &stack.last().unwrap().to_string();
+        }
+
+        (result.clone(), result2.clone())
     }
 }
 
@@ -309,13 +314,9 @@ mod tests {
 
     #[test]
     fn solve_day05_part1() {
-        assert_eq!("SHQWSRBDL", day05::part1(get_contents("input/5"), 9))
-        // assert_eq!("CMZ", day05::part1(get_contents("input/5.sample"), 3))
-    }
-
-    #[test]
-    fn solve_day05_part2() {
-        assert_eq!("CDTQZHBRS", day05::part2(get_contents("input/5"), 9))
-        // assert_eq!("MCD", day05::part2(get_contents("input/5.sample"), 3))
+        assert_eq!(
+            (String::from("SHQWSRBDL"), String::from("CDTQZHBRS")),
+            day05::solve(get_contents("input/5"), 9)
+        )
     }
 }
