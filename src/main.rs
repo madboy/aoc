@@ -223,7 +223,15 @@ pub mod day05 {
             .collect::<Vec<usize>>()
     }
 
-    fn part1(split_data: &str, mut stacks: Vec<Vec<char>>) -> Vec<Vec<char>> {
+    fn result(stacks: Vec<Vec<char>>) -> String {
+        let mut result = String::new();
+        for stack in &stacks {
+            result += &stack.last().unwrap().to_string();
+        }
+        result
+    }
+
+    fn part1(split_data: &str, mut stacks: Vec<Vec<char>>) -> String {
         for row in split_data.split('\n') {
             if !row.is_empty() {
                 let instruction = get_instruction(row);
@@ -236,10 +244,10 @@ pub mod day05 {
                 stacks[instruction[2] - 1].append(v.clone().as_mut());
             }
         }
-        stacks
+        result(stacks)
     }
 
-    fn part2(split_data: &str, mut stacks: Vec<Vec<char>>) -> Vec<Vec<char>> {
+    fn part2(split_data: &str, mut stacks: Vec<Vec<char>>) -> String {
         for row in split_data.split('\n') {
             if !row.is_empty() {
                 let instruction = get_instruction(row);
@@ -249,32 +257,23 @@ pub mod day05 {
                 stacks[instruction[2] - 1].append(v.clone().as_mut());
             }
         }
-        stacks
+        result(stacks)
     }
 
     pub fn solve(data: String, size: usize) -> (String, String) {
         let data = data.replace("\r\n", "\n");
         let split_data = data.split("\n\n").collect::<Vec<&str>>();
+        let crate_information = split_data[0];
+        let instructions = split_data[1];
 
         let stacks = vec![vec![]; size];
-        let stacks = parse_crates(split_data[0], stacks);
-        let stacks = part1(split_data[1], stacks);
+        let stacks = parse_crates(crate_information, stacks);
+        let stacks2 = stacks.clone();
+        let part1_result = part1(instructions, stacks);
+        let part2_result = part2(instructions, stacks2);
 
-        let mut result = String::new();
-        for stack in &stacks {
-            result += &stack.last().unwrap().to_string();
-        }
 
-        let stacks2 = vec![vec![]; size];
-        let stacks2 = parse_crates(split_data[0], stacks2);
-        let stacks2 = part2(split_data[1], stacks2);
-
-        let mut result2 = String::new();
-        for stack in &stacks2 {
-            result2 += &stack.last().unwrap().to_string();
-        }
-
-        (result.clone(), result2.clone())
+        (part1_result, part2_result)
     }
 }
 
