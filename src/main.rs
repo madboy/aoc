@@ -213,12 +213,9 @@ pub mod day05 {
     }
 
     fn get_instruction(row: &str) -> Vec<usize> {
-        let instruction = row
-            .replace("move ", "")
-            .replace(" from", "")
-            .replace(" to", "");
-        instruction
-            .split(' ')
+        let words = &["move", "from", "to"];
+        row.split(" ")
+            .filter(|s| !words.contains(s))
             .map(|s| s.parse::<usize>().expect("number"))
             .collect::<Vec<usize>>()
     }
@@ -271,7 +268,6 @@ pub mod day05 {
         let stacks2 = stacks.clone();
         let part1_result = part1(instructions, stacks);
         let part2_result = part2(instructions, stacks2);
-
 
         (part1_result, part2_result)
     }
