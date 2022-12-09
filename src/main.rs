@@ -1,3 +1,5 @@
+extern crate core;
+
 use std::fs;
 
 fn main() {
@@ -27,10 +29,7 @@ pub mod day01 {
         // loose the rev thanks to https://fasterthanli.me/series/advent-of-code-2022/part-1
         packs.sort_by_key(|&v| std::cmp::Reverse(v));
 
-        (
-            packs.iter().take(1).sum(),
-            packs.iter().take(3).sum(),
-        )
+        (packs.iter().take(1).sum(), packs.iter().take(3).sum())
     }
 }
 
@@ -198,6 +197,98 @@ pub mod day04 {
         (contained, overlap)
     }
 }
+pub mod day05 {
+    pub fn part1(data: String, size: usize) -> String {
+        let data = data.replace("\r\n", "\n");
+        let split_data = data.split("\n\n").collect::<Vec<&str>>();
+
+        let mut stacks = vec![vec![]; size];
+        for row in split_data[0].split("\n") {
+            let row = row.chars().collect::<Vec<char>>();
+            let mut c = 0;
+            for i in (1..row.len()).step_by(4) {
+                match row.get(i) {
+                    Some(v) => {
+                        if !v.is_whitespace() && !v.is_digit(10) {
+                            stacks[c].insert(0, v.clone());
+                        }
+                    }
+                    None => (),
+                };
+                c += 1;
+            }
+        }
+
+        for row in split_data[1].split("\n") {
+            if !row.is_empty() {
+                let instruction = row
+                    .replace("move ", "")
+                    .replace(" from", "")
+                    .replace(" to", "");
+                let instruction = instruction
+                    .split(" ")
+                    .map(|s| s.parse::<usize>().expect("number"))
+                    .collect::<Vec<usize>>();
+
+                for _ in 0..instruction[0] {
+                    let v = stacks[instruction[1] - 1].pop().unwrap();
+                    stacks[instruction[2] - 1].push(v);
+                }
+            }
+        }
+
+        let mut result = String::new();
+        for stack in &stacks {
+            result += &stack.last().unwrap().to_string();
+        }
+        result.clone()
+    }
+
+    pub fn part2(data: String, size: usize) -> String {
+        let data = data.replace("\r\n", "\n");
+        let split_data = data.split("\n\n").collect::<Vec<&str>>();
+
+        let mut stacks = vec![vec![]; size];
+        for row in split_data[0].split("\n") {
+            let row = row.chars().collect::<Vec<char>>();
+            let mut c = 0;
+            for i in (1..row.len()).step_by(4) {
+                match row.get(i) {
+                    Some(v) => {
+                        if !v.is_whitespace() && !v.is_digit(10) {
+                            stacks[c].insert(0, v.clone());
+                        }
+                    }
+                    None => (),
+                };
+                c += 1;
+            }
+        }
+
+        for row in split_data[1].split("\n") {
+            if !row.is_empty() {
+                let instruction = row
+                    .replace("move ", "")
+                    .replace(" from", "")
+                    .replace(" to", "");
+                let instruction = instruction
+                    .split(" ")
+                    .map(|s| s.parse::<usize>().expect("number"))
+                    .collect::<Vec<usize>>();
+
+                let d = stacks[instruction[1] - 1].len() - instruction[0];
+                let v = stacks[instruction[1] - 1].drain(d..).collect::<Vec<char>>();
+                stacks[instruction[2] - 1].append(v.clone().as_mut());
+            }
+        }
+
+        let mut result = String::new();
+        for stack in &stacks {
+            result += &stack.last().unwrap().to_string();
+        }
+        result.clone()
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -231,5 +322,17 @@ mod tests {
     #[test]
     fn solve_day04() {
         assert_eq!((605, 914), day04::solve(get_contents("input/4")))
+    }
+
+    #[test]
+    fn solve_day05_part1() {
+        assert_eq!("SHQWSRBDL", day05::part1(get_contents("input/5"), 9))
+        // assert_eq!("CMZ", day05::part1(get_contents("input/5.sample"), 3))
+    }
+
+    #[test]
+    fn solve_day05_part2() {
+        assert_eq!("CDTQZHBRS", day05::part2(get_contents("input/5"), 9))
+        // assert_eq!("MCD", day05::part2(get_contents("input/5.sample"), 3))
     }
 }
